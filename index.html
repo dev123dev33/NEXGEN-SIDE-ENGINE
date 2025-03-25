@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXGEN SIDE ENGINE v1.5.0</title>
+  <title>NEXGEN SIDE ENGINE v1.5.2</title>
   <style>
     body {
       margin: 0;
@@ -28,7 +28,7 @@
       position: absolute;
       top: 0;
       width: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0,0,0,0.7);
       color: #fff;
       text-align: center;
       padding: 8px 0;
@@ -41,6 +41,19 @@
       height: 600px;
       border: 2px solid #00bcd4;
       background: #fff;
+    }
+    /* Full Screen Button */
+    #fullScreenBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
     }
     /* Editor Container */
     #editorContainer {
@@ -79,12 +92,23 @@
       font-size: 14px;
       border-radius: 4px;
     }
+    /* Template Selector */
+    #templateSelector {
+      margin-bottom: 10px;
+    }
+    #templateSelect {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
     /* Credits */
     #credits {
       position: absolute;
       bottom: 10px;
       right: 10px;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0,0,0,0.5);
       padding: 5px 10px;
       border-radius: 4px;
       font-size: 12px;
@@ -95,7 +119,7 @@
       position: absolute;
       top: 40px;
       right: 10px;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0,0,0,0.7);
       color: #fff;
       padding: 8px;
       border-radius: 4px;
@@ -109,8 +133,7 @@
       left: 0;
       width: 300px;
       max-height: 150px;
-      background: rgba(0, 0, 0, 0.85);
-      color: #0f0;
+      background: rgba(0,0,0,0.85);
       font-size: 12px;
       overflow-y: auto;
       padding: 5px;
@@ -118,6 +141,13 @@
       white-space: pre-wrap;
       display: none;
     }
+    /* Console Level Styling */
+    .console-log { color: white; }
+    .console-warn { color: yellow; }
+    .console-error { color: red; }
+    .console-info { color: #00bcd4; }
+    .console-debug { color: #0f0; }
+    /* Console Controls */
     #toggleConsole, #clearConsole {
       position: absolute;
       bottom: 160px;
@@ -133,12 +163,14 @@
     #clearConsole {
       bottom: 130px;
       left: 10px;
+      background: #f44336;
     }
   </style>
 </head>
 <body>
   <div id="gameContainer">
-    <div id="header">NEXGEN SIDE ENGINE v1.5.0</div>
+    <div id="header">NEXGEN SIDE ENGINE v1.5.2</div>
+    <button id="fullScreenBtn">Full Screen</button>
     <iframe id="previewFrame"></iframe>
     <div id="credits">© 2025 NexGen Game Studios</div>
     <div id="debugPanel">
@@ -151,44 +183,147 @@
   </div>
   <div id="editorContainer">
     <h3>Kode Developer</h3>
+    <!-- Template Selector dengan banyak pilihan -->
+    <div class="editorGroup" id="templateSelector">
+      <label for="templateSelect">Pilih Template:</label>
+      <select id="templateSelect">
+        <option value="demo">Demo Side Engine</option>
+        <option value="minimal">Minimal Starter</option>
+        <option value="platformer">Platformer Example</option>
+        <option value="spaceShooter">Space Shooter</option>
+        <option value="rpg">RPG Sample</option>
+      </select>
+    </div>
     <div class="editorGroup">
       <label for="htmlEditor">HTML</label>
-      <textarea id="htmlEditor">
-<!-- Contoh HTML -->
-<div style="text-align:center;">
-  <h1>Halo Dunia!</h1>
-  <p>Selamat datang di NexGen Side Engine v1.5.0</p>
-</div>
-      </textarea>
+      <textarea id="htmlEditor"></textarea>
     </div>
     <div class="editorGroup">
       <label for="cssEditor">CSS</label>
-      <textarea id="cssEditor">
-/* Contoh CSS */
-body {
-  background: #fafafa;
-  color: #333;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-h1 {
-  color: #00bcd4;
-}
-      </textarea>
+      <textarea id="cssEditor"></textarea>
     </div>
     <div class="editorGroup">
       <label for="jsEditor">JavaScript</label>
-      <textarea id="jsEditor">
-// Contoh JavaScript
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Halaman Custom Loaded di v1.5.0');
-});
-      </textarea>
+      <textarea id="jsEditor"></textarea>
     </div>
     <button id="runFullCode" class="btn">Jalankan Kode Lengkap</button>
   </div>
 
   <script>
-    // ---------- FPS & Elapsed Time ----------
+    // --------------------- Template Management ---------------------
+    const templates = {
+      demo: {
+        html: `
+<!-- Demo Side Engine -->
+<div style="text-align:center;">
+  <h1>Halo Dunia!</h1>
+  <p>Selamat datang di NexGen Side Engine v1.5.2</p>
+</div>`,
+        css: `
+/* Demo CSS */
+body { background: #fafafa; }
+h1 { color: #00bcd4; }`,
+        js: `console.log("Demo Side Engine dijalankan");`
+      },
+      minimal: {
+        html: `
+<!-- Minimal Starter -->
+<div style="text-align:center;">
+  <h2>Minimal Starter</h2>
+  <p>Mulai coding kamu di sini...</p>
+</div>`,
+        css: `
+/* Minimal CSS */
+body { background: #ffffff; margin: 0; }
+h2 { color: #333; }`,
+        js: `console.log("Minimal Starter aktif");`
+      },
+      platformer: {
+        html: `
+<!-- Platformer Example -->
+<div style="text-align:center;">
+  <h1>Platformer Example</h1>
+  <p>Gunakan keyboard untuk bergerak</p>
+</div>`,
+        css: `
+/* Platformer CSS */
+body { background: #d0e7f9; }
+h1 { color: #ff5722; }`,
+        js: `console.log("Platformer Example aktif");`
+      },
+      spaceShooter: {
+        html: `
+<!-- Space Shooter -->
+<div style="text-align:center;">
+  <h1>Space Shooter</h1>
+  <p>Siap tempur di luar angkasa!</p>
+</div>`,
+        css: `
+/* Space Shooter CSS */
+body { background: #000; }
+h1 { color: #00e676; }`,
+        js: `console.log("Space Shooter aktif");`
+      },
+      rpg: {
+        html: `
+<!-- RPG Sample -->
+<div style="text-align:center;">
+  <h1>RPG Sample</h1>
+  <p>Petualangan epik dimulai di sini!</p>
+</div>`,
+        css: `
+/* RPG CSS */
+body { background: #f0e6d2; }
+h1 { color: #6a1b9a; }`,
+        js: `console.log("RPG Sample aktif");`
+      }
+    };
+
+    function loadTemplate(templateName) {
+      const template = templates[templateName];
+      if (template) {
+        document.getElementById('htmlEditor').value = template.html.trim();
+        document.getElementById('cssEditor').value = template.css.trim();
+        document.getElementById('jsEditor').value = template.js.trim();
+        runFullCode();
+      }
+    }
+
+    // Load template saat dropdown berubah
+    document.getElementById('templateSelect').addEventListener('change', function() {
+      loadTemplate(this.value);
+    });
+
+    // --------------------- Auto-Save & Load Code ---------------------
+    const storageKeys = {
+      html: 'sideEngine_html',
+      css: 'sideEngine_css',
+      js: 'sideEngine_js'
+    };
+
+    function saveCode() {
+      localStorage.setItem(storageKeys.html, document.getElementById('htmlEditor').value);
+      localStorage.setItem(storageKeys.css, document.getElementById('cssEditor').value);
+      localStorage.setItem(storageKeys.js, document.getElementById('jsEditor').value);
+    }
+
+    function loadCode() {
+      const htmlCode = localStorage.getItem(storageKeys.html);
+      const cssCode = localStorage.getItem(storageKeys.css);
+      const jsCode = localStorage.getItem(storageKeys.js);
+      if (htmlCode !== null) {
+        document.getElementById('htmlEditor').value = htmlCode;
+      } else {
+        loadTemplate(document.getElementById('templateSelect').value);
+      }
+      if (cssCode !== null) document.getElementById('cssEditor').value = cssCode;
+      if (jsCode !== null) document.getElementById('jsEditor').value = jsCode;
+    }
+
+    setInterval(saveCode, 1000);
+    loadCode();
+
+    // --------------------- FPS & Elapsed Time ---------------------
     let lastFrameTime = performance.now();
     let frameCount = 0;
     let elapsedTime = 0;
@@ -196,8 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const now = performance.now();
       frameCount++;
       if (now - lastFrameTime >= 1000) {
-        const fps = frameCount;
-        document.getElementById("fpsCounter").innerText = fps;
+        document.getElementById("fpsCounter").innerText = frameCount;
         frameCount = 0;
         lastFrameTime = now;
       }
@@ -210,27 +344,50 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateElapsedTime, 100);
     updateFPS();
 
-    // ---------- Live Preview (Debounce) ----------
+    // --------------------- Full Screen Mode ---------------------
+    document.getElementById("fullScreenBtn").addEventListener("click", () => {
+      const gameContainer = document.getElementById("gameContainer");
+      if (!document.fullscreenElement) {
+        gameContainer.requestFullscreen().catch(err => {
+          alert(`Gagal masuk full screen: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // --------------------- Live Preview (Debounce) ---------------------
     let previewDebounce;
     function runFullCode() {
       const htmlCode = document.getElementById("htmlEditor").value;
       const cssCode = document.getElementById("cssEditor").value;
       const jsCode = document.getElementById("jsEditor").value;
       
-      // Override console.log di dalam iframe
+      // Override console methods di dalam iframe
       const consoleOverride = `
         <script>
           (function() {
-            const oldLog = console.log;
-            console.log = function(...args) {
-              oldLog.apply(console, args);
-              window.parent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+            var levels = {
+              log: "console-log",
+              warn: "console-warn",
+              error: "console-error",
+              info: "console-info",
+              debug: "console-debug"
             };
+            ["log", "warn", "error", "info", "debug"].forEach(function(level) {
+              var original = console[level];
+              console[level] = function() {
+                original.apply(console, arguments);
+                var args = Array.prototype.slice.call(arguments);
+                var msg = args.join(" ");
+                window.parent.postMessage({ type: "console", level: levels[level], message: msg }, "*");
+              };
+            });
           })();
         <\/script>
       `;
       
-      const completeCode = `
+      var completeCode = `
         <!DOCTYPE html>
         <html lang="id">
         <head>
@@ -249,30 +406,33 @@ document.addEventListener('DOMContentLoaded', () => {
       
       document.getElementById("previewFrame").srcdoc = completeCode;
     }
-    
-    // Jalankan live preview setiap ada perubahan (dengan debounce)
+
     const editors = document.querySelectorAll("#htmlEditor, #cssEditor, #jsEditor");
-    editors.forEach(editor => {
-      editor.addEventListener("input", () => {
+    editors.forEach(function(editor) {
+      editor.addEventListener("input", function() {
         clearTimeout(previewDebounce);
         previewDebounce = setTimeout(runFullCode, 500);
       });
     });
-    
     document.getElementById("runFullCode").addEventListener("click", runFullCode);
     runFullCode();
 
-    // ---------- Console Panel Handling ----------
+    // --------------------- Console Panel Handling ---------------------
     const consolePanel = document.getElementById("consolePanel");
-    document.getElementById("toggleConsole").addEventListener("click", () => {
-      consolePanel.style.display = consolePanel.style.display === 'none' ? 'block' : 'none';
+    document.getElementById("toggleConsole").addEventListener("click", function() {
+      consolePanel.style.display = (consolePanel.style.display === "none" || consolePanel.style.display === "") ? "block" : "none";
     });
-    document.getElementById("clearConsole").addEventListener("click", () => {
+    document.getElementById("clearConsole").addEventListener("click", function() {
       consolePanel.innerText = "";
     });
-    window.addEventListener("message", (event) => {
-      if (event.data && event.data.type === 'console') {
-        consolePanel.innerText += event.data.message + "\n";
+    window.addEventListener("message", function(event) {
+      if (event.data && event.data.type === "console") {
+        var msg = event.data.message;
+        var level = event.data.level;
+        var div = document.createElement("div");
+        div.classList.add(level);
+        div.textContent = msg;
+        consolePanel.appendChild(div);
         consolePanel.scrollTop = consolePanel.scrollHeight;
       }
     });
