@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXGEN SIDE ENGINE v1.5.2</title>
+  <title>NEXGEN SIDE ENGINE v1.5.3</title>
   <style>
     body {
       margin: 0;
@@ -169,7 +169,7 @@
 </head>
 <body>
   <div id="gameContainer">
-    <div id="header">NEXGEN SIDE ENGINE v1.5.2</div>
+    <div id="header">NEXGEN SIDE ENGINE v1.5.3</div>
     <button id="fullScreenBtn">Full Screen</button>
     <iframe id="previewFrame"></iframe>
     <div id="credits">© 2025 NexGen Game Studios</div>
@@ -192,6 +192,7 @@
         <option value="platformer">Platformer Example</option>
         <option value="spaceShooter">Space Shooter</option>
         <option value="rpg">RPG Sample</option>
+        <option value="physics">Physics Demo</option>
       </select>
     </div>
     <div class="editorGroup">
@@ -217,7 +218,7 @@
 <!-- Demo Side Engine -->
 <div style="text-align:center;">
   <h1>Halo Dunia!</h1>
-  <p>Selamat datang di NexGen Side Engine v1.5.2</p>
+  <p>Selamat datang di NexGen Side Engine v1.5.3</p>
 </div>`,
         css: `
 /* Demo CSS */
@@ -276,6 +277,27 @@ h1 { color: #00e676; }`,
 body { background: #f0e6d2; }
 h1 { color: #6a1b9a; }`,
         js: `console.log("RPG Sample aktif");`
+      },
+      physics: {
+        html: `
+<!-- Physics Demo -->
+<canvas id="physicsCanvas" width="800" height="600" style="border:2px solid #00bcd4; background:#fff;"></canvas>
+<p style="text-align:center;">Physics Demo: Bola jatuh dengan gravitasi</p>
+        `,
+        css: `
+/* Physics Demo CSS */
+canvas { display: block; margin: 20px auto; }
+        `,
+        js: `
+var canvas = document.getElementById("physicsCanvas");
+var ctx = canvas.getContext("2d");
+
+// Tambahkan objek fisika: bola
+var ball = { x: 400, y: 50, radius: 20, vy: 0, color: "#FF5733" };
+addPhysicsObject(ball);
+startPhysicsLoop();
+console.log("Physics Demo aktif");
+        `
       }
     };
 
@@ -356,6 +378,62 @@ h1 { color: #6a1b9a; }`,
       }
     });
 
+    // --------------------- Helper Functions (Asset Loader & Physics) ---------------------
+    // Fungsi untuk memuat sprite (gambar)
+    function loadSprite(src, callback) {
+      var img = new Image();
+      img.onload = function() { if (callback) callback(img); };
+      img.onerror = function() { console.error("Gagal memuat sprite: " + src); };
+      img.src = src;
+      return img;
+    }
+    // Fungsi untuk memuat audio
+    function loadAudio(src, callback) {
+      var audio = new Audio();
+      audio.onloadeddata = function() { if (callback) callback(audio); };
+      audio.onerror = function() { console.error("Gagal memuat audio: " + src); };
+      audio.src = src;
+      return audio;
+    }
+    // Basic Physics Engine
+    var physicsObjects = [];
+    function addPhysicsObject(obj) {
+      physicsObjects.push(obj);
+    }
+    function updatePhysics() {
+      physicsObjects.forEach(function(obj) {
+        obj.vy = (obj.vy || 0) + 0.5;
+        obj.y += obj.vy;
+        if (obj.y + obj.radius > 600) {
+          obj.y = 600 - obj.radius;
+          obj.vy *= -0.7;
+        }
+      });
+    }
+    function renderPhysics(ctx) {
+      physicsObjects.forEach(function(obj) {
+        ctx.beginPath();
+        ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+        ctx.fillStyle = obj.color || "#FF5733";
+        ctx.fill();
+        ctx.closePath();
+      });
+    }
+    function startPhysicsLoop() {
+      // Pastikan ada canvas dengan id "physicsCanvas" di HTML template
+      var canvas = document.getElementById("physicsCanvas");
+      if (canvas) {
+        var ctx = canvas.getContext("2d");
+        function loop() {
+          updatePhysics();
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          renderPhysics(ctx);
+          requestAnimationFrame(loop);
+        }
+        loop();
+      }
+    }
+
     // --------------------- Live Preview (Debounce) ---------------------
     let previewDebounce;
     function runFullCode() {
@@ -387,6 +465,19 @@ h1 { color: #6a1b9a; }`,
         <\/script>
       `;
       
+      // Inject helper functions untuk asset loader & physics
+      const helperOverride = `
+        <script>
+          (${loadSprite.toString()})();
+          (${loadAudio.toString()})();
+          var physicsObjects = [];
+          (${addPhysicsObject.toString()})();
+          (${updatePhysics.toString()})();
+          (${renderPhysics.toString()})();
+          (${startPhysicsLoop.toString()})();
+        <\/script>
+      `;
+      
       var completeCode = `
         <!DOCTYPE html>
         <html lang="id">
@@ -399,6 +490,7 @@ h1 { color: #6a1b9a; }`,
         <body>
           ${htmlCode}
           ${consoleOverride}
+          ${helperOverride}
           <script>${jsCode}<\/script>
         </body>
         </html>
