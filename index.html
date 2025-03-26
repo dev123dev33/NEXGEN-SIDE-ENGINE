@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXGEN SIDE ENGINE v1.5.4</title>
+  <title>NEXGEN SIDE ENGINE v1.5.5</title>
   <style>
+    /* Layout utama: 3 kolom (UI Builder, Game Preview, Code Editor) */
     body {
       margin: 0;
       display: flex;
@@ -12,7 +13,52 @@
       font-family: Arial, sans-serif;
       background: #1a1a1a;
     }
-    /* Container utama: Preview & Header */
+    /* Kolom UI Builder */
+    #uiBuilderPanel {
+      flex: 0 0 200px;
+      background: #2c2c2c;
+      padding: 10px;
+      color: #fff;
+      overflow-y: auto;
+      border-right: 2px solid #444;
+    }
+    #uiBuilderPanel h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+    .ui-element {
+      background: #00bcd4;
+      margin: 8px 0;
+      padding: 8px;
+      text-align: center;
+      border-radius: 4px;
+      cursor: grab;
+    }
+    /* Panel Asset Manager di bawah UI Builder */
+    #assetManagerPanel {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #555;
+    }
+    #assetManagerPanel h4 {
+      margin: 0 0 8px 0;
+      text-align: center;
+      font-size: 16px;
+    }
+    #assetList {
+      list-style: none;
+      padding: 0;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    #assetList li {
+      background: #444;
+      margin: 4px 0;
+      padding: 4px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    /* Kolom Game Preview */
     #gameContainer {
       flex: 3;
       background: #333;
@@ -35,7 +81,7 @@
       font-size: 18px;
       font-weight: bold;
     }
-    /* Preview Frame */
+    /* Preview Frame dengan area drop untuk UI Builder */
     #previewFrame {
       width: 800px;
       height: 600px;
@@ -55,9 +101,9 @@
       cursor: pointer;
       font-size: 12px;
     }
-    /* Editor Container */
+    /* Kolom Editor Kode */
     #editorContainer {
-      flex: 1;
+      flex: 0 0 300px;
       padding: 10px;
       background: #f4f4f4;
       border-left: 2px solid #ccc;
@@ -92,18 +138,7 @@
       font-size: 14px;
       border-radius: 4px;
     }
-    /* Template Selector */
-    #templateSelector {
-      margin-bottom: 10px;
-    }
-    #templateSelect {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    /* Credits */
+    /* Credits & Debug Panel (tetap sama) */
     #credits {
       position: absolute;
       bottom: 10px;
@@ -114,7 +149,6 @@
       font-size: 12px;
       color: #ccc;
     }
-    /* Debug Panel */
     #debugPanel {
       position: absolute;
       top: 40px;
@@ -126,7 +160,6 @@
       font-size: 12px;
       min-width: 140px;
     }
-    /* Console Panel */
     #consolePanel {
       position: absolute;
       bottom: 0;
@@ -141,13 +174,11 @@
       white-space: pre-wrap;
       display: none;
     }
-    /* Console Level Styling */
     .console-log { color: white; }
     .console-warn { color: yellow; }
     .console-error { color: red; }
     .console-info { color: #00bcd4; }
     .console-debug { color: #0f0; }
-    /* Console Controls */
     #toggleConsole, #clearConsole {
       position: absolute;
       bottom: 160px;
@@ -168,10 +199,27 @@
   </style>
 </head>
 <body>
+  <!-- UI Builder Panel -->
+  <div id="uiBuilderPanel">
+    <h3>UI Builder</h3>
+    <div class="ui-element" draggable="true" data-type="button">Button</div>
+    <div class="ui-element" draggable="true" data-type="slider">Slider</div>
+    <div class="ui-element" draggable="true" data-type="inputText">Input Text</div>
+    <div class="ui-element" draggable="true" data-type="checkbox">Checkbox</div>
+    <!-- Area Asset Manager -->
+    <div id="assetManagerPanel">
+      <h4>Asset Manager</h4>
+      <input type="file" id="assetUpload" multiple>
+      <ul id="assetList"></ul>
+    </div>
+  </div>
+
+  <!-- Game Preview Container -->
   <div id="gameContainer">
-    <div id="header">NEXGEN SIDE ENGINE v1.5.4</div>
+    <div id="header">NEXGEN SIDE ENGINE v1.5.5</div>
     <button id="fullScreenBtn">Full Screen</button>
-    <iframe id="previewFrame"></iframe>
+    <!-- Preview Frame diberi dukungan drop untuk UI elements -->
+    <iframe id="previewFrame" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)"></iframe>
     <div id="credits">© 2025 NexGen Game Studios</div>
     <div id="debugPanel">
       <b>FPS:</b> <span id="fpsCounter">0</span><br>
@@ -181,9 +229,11 @@
     <button id="clearConsole">Clear Console</button>
     <div id="consolePanel"></div>
   </div>
+
+  <!-- Code Editor Panel -->
   <div id="editorContainer">
     <h3>Kode Developer</h3>
-    <!-- Template Selector dengan banyak pilihan -->
+    <!-- Template Selector -->
     <div class="editorGroup" id="templateSelector">
       <label for="templateSelect">Pilih Template:</label>
       <select id="templateSelect">
@@ -211,14 +261,14 @@
   </div>
 
   <script>
-    // --------------------- Template Management ---------------------
+    // --------------------- Template Management (tetap sama) ---------------------
     const templates = {
       demo: {
         html: `
 <!-- Demo Side Engine -->
 <div style="text-align:center;">
   <h1>Halo Dunia!</h1>
-  <p>Selamat datang di NexGen Side Engine v1.5.4</p>
+  <p>Selamat datang di NexGen Side Engine v1.5.5</p>
 </div>`,
         css: `
 /* Demo CSS */
@@ -332,7 +382,6 @@ canvas { display: block; margin: 20px auto; }
       }
     }
 
-    // Load template saat dropdown berubah
     document.getElementById('templateSelect').addEventListener('change', function() {
       loadTemplate(this.value);
     });
@@ -406,7 +455,6 @@ canvas { display: block; margin: 20px auto; }
       const cssCode = document.getElementById("cssEditor").value;
       const jsCode = document.getElementById("jsEditor").value;
       
-      // Override console methods di dalam iframe
       const consoleOverride = `
         <script>
           (function() {
@@ -430,11 +478,9 @@ canvas { display: block; margin: 20px auto; }
         <\/script>
       `;
       
-      // Inject helper functions (jika diperlukan, seperti physics, audio, dsb.)
       const helperOverride = `
         <script>
-          // Contoh: Fungsi untuk memuat sprite dan audio bisa ditambahkan di sini.
-          // Untuk demo template, helper tidak digunakan.
+          // Helper functions untuk game (misalnya physics, audio, dsb.)
         <\/script>
       `;
       
@@ -447,11 +493,41 @@ canvas { display: block; margin: 20px auto; }
           <title>Preview</title>
           <style>${cssCode}</style>
         </head>
-        <body>
+        <body ondragover="event.preventDefault()" ondrop="dropElement(event)">
           ${htmlCode}
           ${consoleOverride}
           ${helperOverride}
           <script>${jsCode}<\/script>
+          <script>
+            // Fungsi drop untuk menambahkan elemen UI yang di-drag dari UI Builder
+            function dropElement(ev) {
+              ev.preventDefault();
+              if(ev.dataTransfer.getData("ui-type")) {
+                var type = ev.dataTransfer.getData("ui-type");
+                var newElem;
+                if(type === "button") {
+                  newElem = document.createElement("button");
+                  newElem.innerText = "Button";
+                } else if(type === "slider") {
+                  newElem = document.createElement("input");
+                  newElem.type = "range";
+                } else if(type === "inputText") {
+                  newElem = document.createElement("input");
+                  newElem.type = "text";
+                  newElem.placeholder = "Input Text";
+                } else if(type === "checkbox") {
+                  newElem = document.createElement("input");
+                  newElem.type = "checkbox";
+                }
+                if(newElem) {
+                  newElem.style.position = "absolute";
+                  newElem.style.left = ev.clientX + "px";
+                  newElem.style.top = ev.clientY + "px";
+                  document.body.appendChild(newElem);
+                }
+              }
+            }
+          <\/script>
         </body>
         </html>
       `;
@@ -487,6 +563,36 @@ canvas { display: block; margin: 20px auto; }
         consolePanel.appendChild(div);
         consolePanel.scrollTop = consolePanel.scrollHeight;
       }
+    });
+
+    // --------------------- Drag & Drop UI Builder ---------------------
+    // Event handler untuk elemen yang di-drag dari panel UI Builder
+    const uiElements = document.querySelectorAll(".ui-element");
+    uiElements.forEach(function(elem) {
+      elem.addEventListener("dragstart", function(ev) {
+        ev.dataTransfer.setData("ui-type", this.getAttribute("data-type"));
+      });
+    });
+    // Fungsi bawaan untuk mencegah default agar drop bisa diterima
+    function dragOverHandler(ev) {
+      ev.preventDefault();
+    }
+    function dropHandler(ev) {
+      ev.preventDefault();
+      // Drop di iframe sudah ditangani di dalam runFullCode melalui fungsi dropElement
+    }
+
+    // --------------------- Asset Manager ---------------------
+    // Fungsi untuk mengelola asset yang diupload
+    const assetUpload = document.getElementById("assetUpload");
+    const assetList = document.getElementById("assetList");
+    assetUpload.addEventListener("change", function() {
+      assetList.innerHTML = "";
+      Array.from(this.files).forEach(function(file) {
+        var li = document.createElement("li");
+        li.textContent = file.name;
+        assetList.appendChild(li);
+      });
     });
   </script>
 </body>
