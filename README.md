@@ -1,27 +1,12 @@
-🔥 NEXGEN SIDE ENGINE v1.5.5 – SEKARANG SUDAH RILIS! 🔥
-💥 Versi terbaru dari Side Engine kini hadir dengan fitur terbaru untuk mempermudah pengembangan game kamu!
+⚡ **Update Side Engine 1.5.6 Telah Dirilis – Fokus Pembersihan Bug & Optimisasi!** ⚡  
 
-🆕 Fitur Terbaru di v1.5.5
-🎨 UI Builder – Drag & Drop Elemen UI dengan Mudah!
-🚀 Bangun antarmuka game lebih cepat dan intuitif dengan fitur drag & drop!
-🔹 Elemen baru yang bisa kamu gunakan:
-✅ Button – Tambahkan tombol interaktif dalam sekejap
-✅ Slider – Buat kontrol geser untuk pengaturan atau mekanik game
-✅ Input Text – Tambahkan form input untuk interaksi pemain
-✅ Checkbox – Pilihan lebih fleksibel dalam pengaturan game
+Setelah evaluasi lebih lanjut, kami memutuskan untuk **membatalkan rencana update sebelumnya** karena terlalu banyak bug yang muncul saat pengembangan. Sebagai gantinya, kami merilis **versi 1.5.6** dengan fokus utama pada **pembersihan bug dan optimisasi**, agar Side Engine tetap stabil dan nyaman digunakan.  
 
-💡 Cukup tarik dan letakkan elemen ke dalam game, tanpa repot coding dari nol!
+### 🔥 **Apa yang Baru di 1.5.6?**  
+✅ **Pembersihan bug besar-besaran** untuk menghilangkan error yang mengganggu.  
+✅ **Optimisasi kinerja** agar lebih ringan, cepat, dan responsif.  
+✅ **Asset Manager yang lebih stabil** untuk pengelolaan file yang lebih baik.  
 
-📂 Asset Manager – Semua Asset dalam Satu Tempat!
-📌 Kini mengelola asset jadi lebih praktis!
-🔹 Upload dan kelola gambar, suara, dan animasi langsung di dalam engine!
-🎵 Tidak perlu bolak-balik cari file, semuanya bisa diakses dengan mudah!
+📢 **Perlu dicatat bahwa update yang direncanakan sebelumnya (Pathfinding AI, Scene Editor, dll.) dibatalkan karena terlalu banyak bug dan tidak bisa diperbaiki dengan cepat.** Kami memprioritaskan kestabilan Side Engine agar tetap bisa digunakan dengan baik.  
 
-🚀 Optimasi & Performa Lebih Ringan!
-⚡ Rendering UI lebih cepat & responsif – Tampilan lebih smooth tanpa lag!
-🔧 Kode editor & preview tetap optimal – Semua fitur sebelumnya tetap berjalan lebih stabil!
-🎮 Full screen mode & FPS counter tetap tersedia untuk debugging yang lebih akurat!
-
-🔥 Side Engine v1.5.5 sudah bisa digunakan sekarang!
-Ayo ciptakan game terbaikmu dengan fitur terbaru ini! 🎮💡🚀
-
+🚀 **Update ini sudah bisa digunakan sekarang!** Jika kamu menemukan bug atau ada saran, beri tahu kami! 🔥
