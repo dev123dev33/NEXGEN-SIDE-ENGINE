@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXGEN SIDE ENGINE v1.5.5</title>
+  <title>NEXGEN SIDE ENGINE v1.5.6</title>
   <style>
     /* Layout utama: 3 kolom (UI Builder, Game Preview, Code Editor) */
     body {
@@ -216,7 +216,7 @@
 
   <!-- Game Preview Container -->
   <div id="gameContainer">
-    <div id="header">NEXGEN SIDE ENGINE v1.5.5</div>
+    <div id="header">NEXGEN SIDE ENGINE v1.5.6</div>
     <button id="fullScreenBtn">Full Screen</button>
     <!-- Preview Frame diberi dukungan drop untuk UI elements -->
     <iframe id="previewFrame" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)"></iframe>
@@ -547,17 +547,25 @@ canvas { display: block; margin: 20px auto; }
 
     // --------------------- Console Panel Handling ---------------------
     const consolePanel = document.getElementById("consolePanel");
-    document.getElementById("toggleConsole").addEventListener("click", function() {
-      consolePanel.style.display = (consolePanel.style.display === "none" || consolePanel.style.display === "") ? "block" : "none";
+    const toggleConsoleBtn = document.getElementById("toggleConsole");
+    const clearConsoleBtn = document.getElementById("clearConsole");
+
+    toggleConsoleBtn.addEventListener("click", function () {
+      consolePanel.style.display =
+        consolePanel.style.display === "none" || consolePanel.style.display === ""
+          ? "block"
+          : "none";
     });
-    document.getElementById("clearConsole").addEventListener("click", function() {
+
+    clearConsoleBtn.addEventListener("click", function () {
       consolePanel.innerText = "";
     });
-    window.addEventListener("message", function(event) {
+
+    window.addEventListener("message", function (event) {
       if (event.data && event.data.type === "console") {
-        var msg = event.data.message;
-        var level = event.data.level;
-        var div = document.createElement("div");
+        const msg = event.data.message;
+        const level = event.data.level;
+        const div = document.createElement("div");
         div.classList.add(level);
         div.textContent = msg;
         consolePanel.appendChild(div);
@@ -566,32 +574,37 @@ canvas { display: block; margin: 20px auto; }
     });
 
     // --------------------- Drag & Drop UI Builder ---------------------
-    // Event handler untuk elemen yang di-drag dari panel UI Builder
     const uiElements = document.querySelectorAll(".ui-element");
-    uiElements.forEach(function(elem) {
-      elem.addEventListener("dragstart", function(ev) {
+
+    uiElements.forEach(function (elem) {
+      elem.addEventListener("dragstart", function (ev) {
         ev.dataTransfer.setData("ui-type", this.getAttribute("data-type"));
       });
     });
-    // Fungsi bawaan untuk mencegah default agar drop bisa diterima
+
     function dragOverHandler(ev) {
       ev.preventDefault();
     }
+
     function dropHandler(ev) {
       ev.preventDefault();
       // Drop di iframe sudah ditangani di dalam runFullCode melalui fungsi dropElement
     }
 
     // --------------------- Asset Manager ---------------------
-    // Fungsi untuk mengelola asset yang diupload
     const assetUpload = document.getElementById("assetUpload");
     const assetList = document.getElementById("assetList");
-    assetUpload.addEventListener("change", function() {
-      assetList.innerHTML = "";
-      Array.from(this.files).forEach(function(file) {
-        var li = document.createElement("li");
-        li.textContent = file.name;
-        assetList.appendChild(li);
+
+    assetUpload.addEventListener("change", function () {
+      assetList.innerHTML = ""; // Kosongkan daftar asset
+      Array.from(this.files).forEach(function (file) {
+        if (file.type.startsWith("image/")) {
+          const li = document.createElement("li");
+          li.textContent = file.name;
+          assetList.appendChild(li);
+        } else {
+          console.warn(`File ${file.name} bukan gambar dan tidak akan ditambahkan.`);
+        }
       });
     });
   </script>
